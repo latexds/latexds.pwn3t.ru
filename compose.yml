@@ -1,0 +1,5 @@
+services:
+  server:
+    image: nakidai/latexdssite:latest
+    ports:
+      - 8001:80
