@@ -1,5 +1,5 @@
 services:
   server:
-    image: nakidai/latexdssite:latest
+    image: ghcr.io/latexds/latexds.nakidai.ru:latest
     ports:
       - 8001:80
