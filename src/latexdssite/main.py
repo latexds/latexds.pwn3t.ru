@@ -17,9 +17,9 @@ class LaTeXDSSite(FastAPI):
         @self.get("/source/{who}", response_class=RedirectResponse)
         def source(who: str) -> RedirectResponse:
             if who == "bot":
-                return RedirectResponse("https://github.com/nakidai/latexds")
+                return RedirectResponse("https://github.com/latexds/latexds")
             elif who == "site":
-                return RedirectResponse("https://github.com/nakidai/latexds-site")
+                return RedirectResponse("https://github.com/latexds/latexds.nakidai.ru")
             raise HTTPException(status_code=404, detail="Not found")
 
         @self.get("/{path}", response_class=HTMLResponse)
