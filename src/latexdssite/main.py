@@ -1,33 +1,33 @@
 import argparse
-from os.path import isfile
+from typing import NoReturn
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
+from aiohttp.web import Application, HTTPNotFound, get, HTTPFound, Response, Request, run_app, static, StreamResponse
 import uvicorn
 
 
-class LaTeXDSSite(FastAPI):
-    def __init__(self) -> None:
-        super().__init__(docs_url=None, redoc_url=None)
+class LaTeXDSSite(Application):
+    def __init__(self, www_path: str = "www", *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
-        @self.get("/", response_class=RedirectResponse)
-        def invite() -> RedirectResponse:
-            return RedirectResponse("https://discord.com/oauth2/authorize?client_id=1269223729267740703")
+        self.add_routes(
+            [
+                get("/", self.root_redirect),
+                get("/source/{which}", self.source_redirect),
+                static("/", www_path),
+            ]
+        )
 
-        @self.get("/source/{who}", response_class=RedirectResponse)
-        def source(who: str) -> RedirectResponse:
-            if who == "bot":
-                return RedirectResponse("https://github.com/latexds/latexds")
-            elif who == "site":
-                return RedirectResponse("https://github.com/latexds/latexds.nakidai.ru")
-            raise HTTPException(status_code=404, detail="Not found")
+    async def root_redirect(self, _: Request) -> NoReturn:
+        raise HTTPFound("https://discord.com/oauth2/authorize?client_id=1269223729267740703")
 
-        @self.get("/{path}", response_class=HTMLResponse)
-        def static(path: str) -> HTMLResponse:
-            if not isfile(f"{path}.html"):
-                raise HTTPException(status_code=404, detail="Not found")
-            with open(f"{path}.html") as page, open("base") as base:
-                return HTMLResponse(base.read() + page.read())
+    async def source_redirect(self, request: Request) -> NoReturn:
+        match request.match_info["which"]:
+            case "bot":
+                raise HTTPFound("https://github.com/latexds/latexds")
+            case "bot":
+                raise HTTPFound("https://github.com/latexds/latexds.pwn3t.ru")
+            case _:
+                raise HTTPNotFound
 
 
 def main() -> None:
@@ -45,14 +45,15 @@ def main() -> None:
         metavar="HOST",
         help="IP of your host"
     )
+    parser.add_argument(
+        "-r", "--root",
+        default="www",
+        metavar="PATH",
+        help="Root where static pages are"
+    )
     args = parser.parse_args()
 
     try:
-        uvicorn.run(
-            LaTeXDSSite(),
-            host=args.host,
-            port=args.port,
-            log_level="info"
-        )
+        run_app(LaTeXDSSite(args.root), host=args.host, port=args.port)
     except KeyboardInterrupt:
         pass

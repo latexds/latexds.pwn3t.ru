@@ -8,8 +8,7 @@ description = "Site for LaTeXDS"
 readme = "README.md"
 version = "v1.1.0"
 dependencies = [
-    "uvicorn==0.30.5",
-    "fastapi==0.112.0",
+    "aiohttp==3.10.5",
 ]
 authors = [{name = "Nakidai", email = "plaza521@inbox.ru"}]
 classifiers = [
