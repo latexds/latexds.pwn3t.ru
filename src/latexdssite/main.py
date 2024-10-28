@@ -1,8 +1,7 @@
 import argparse
 from typing import NoReturn
 
-from aiohttp.web import Application, HTTPNotFound, get, HTTPFound, Response, Request, run_app, static, StreamResponse
-import uvicorn
+from aiohttp.web import Application, HTTPNotFound, get, HTTPFound, Request, run_app, static
 
 
 class LaTeXDSSite(Application):
@@ -13,12 +12,20 @@ class LaTeXDSSite(Application):
             [
                 get("/", self.root_redirect),
                 get("/source/{which}", self.source_redirect),
+                get("/tos", self.tos_redirect),
+                get("/tos", self.privacy_redirect),
                 static("/", www_path),
             ]
         )
 
     async def root_redirect(self, _: Request) -> NoReturn:
         raise HTTPFound("https://discord.com/oauth2/authorize?client_id=1269223729267740703")
+
+    async def tos_redirect(self, _: Request) -> NoReturn:
+        raise HTTPFound("https://latexds.pwn3t.ru/tos.html")
+
+    async def privacy_redirect(self, _: Request) -> NoReturn:
+        raise HTTPFound("https://latexds.pwn3t.ru/privacy.html")
 
     async def source_redirect(self, request: Request) -> NoReturn:
         match request.match_info["which"]:
