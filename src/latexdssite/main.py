@@ -13,7 +13,7 @@ class LaTeXDSSite(Application):
                 get("/", self.root_redirect),
                 get("/source/{which}", self.source_redirect),
                 get("/tos", self.tos_redirect),
-                get("/tos", self.privacy_redirect),
+                get("/privacy", self.privacy_redirect),
                 static("/", www_path),
             ]
         )
