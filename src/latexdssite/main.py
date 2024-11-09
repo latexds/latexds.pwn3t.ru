@@ -31,7 +31,7 @@ class LaTeXDSSite(Application):
         match request.match_info["which"]:
             case "bot":
                 raise HTTPFound("https://github.com/latexds/latexds")
-            case "bot":
+            case "site":
                 raise HTTPFound("https://github.com/latexds/latexds.pwn3t.ru")
             case _:
                 raise HTTPNotFound
